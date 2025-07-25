@@ -2,19 +2,20 @@ import { useState } from "react";
 import "./TableView.css";
 
 interface TableViewProps {
-  data: string[][];
+  rows: string[][];
+  onChange: (newData: string[][]) => void;
 }
 
-export function TableView({ data }: TableViewProps) {
-  const [rows, setRows] = useState(data);
+export function TableView({ rows, onChange }: TableViewProps) {
+  // const [rows, setRows] = useState(data);
   const keys = rows[0];
   const valueRows = rows.slice(1);
 
   const [cellRowSpan, setCellRowSpan] = useState(
-    data.map((row) => row.map(() => 1)),
+    rows.map((row) => row.map(() => 1)),
   );
   const [cellColSpan, setCellColSpan] = useState(
-    data.map((row) => row.map(() => 1)),
+    rows.map((row) => row.map(() => 1)),
   );
   const [selectedCell, setSelectedCell] = useState<[number, number]>();
 
@@ -49,7 +50,7 @@ export function TableView({ data }: TableViewProps) {
       newRow,
       ...rows.slice(selectedRow + 1),
     ];
-    setRows(newRows);
+    onChange(newRows);
   }
 
   function insertCell(selectedRow: number, selectedCol: number, value: string) {
@@ -64,7 +65,7 @@ export function TableView({ data }: TableViewProps) {
       newRow,
       ...rows.slice(selectedRow + 1),
     ];
-    setRows(newRows);
+    onChange(newRows);
   }
 
   return (

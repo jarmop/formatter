@@ -12,6 +12,7 @@ function App() {
   const [parsedData, setParsedData] = useState<
     string[][] | Record<string, string>
   >();
+  const [viewMode, setViewMode] = useState<"object" | "table">("object");
 
   useEffect(() => {
     if (input) {
@@ -83,21 +84,64 @@ function App() {
 
           setInput(value);
           parse(value);
-
-          // try {
-          //   navigator.clipboard.writeText(jsValueString).then(() =>
-          //     console.log("Content copied to clipboard successfully!")
-          //   );
-          // } catch (err) {
-          //   console.error("Failed to copy content: ", err);
-          // }
         }}
       >
       </textarea>
-      {Array.isArray(parsedData) &&
-        <TableView data={parsedData} />}
-      <pre>{output}</pre>
+      <div>
+        {viewMode === "table" && Array.isArray(parsedData)
+          ? (
+            <>
+              <Button
+                value="Show object"
+                onClick={() => setViewMode("object")}
+              />
+              <TableView
+                rows={parsedData}
+                onChange={(newData: string[][]) => setParsedData(newData)}
+              />
+            </>
+          )
+          : (
+            <>
+              <Button value="Show table" onClick={() => setViewMode("table")} />
+              <Button
+                value="Copy to clipboard"
+                onClick={() => {
+                  try {
+                    navigator.clipboard.writeText(output).then(() =>
+                      console.log("Content copied to clipboard successfully!")
+                    );
+                  } catch (err) {
+                    console.error("Failed to copy content: ", err);
+                  }
+                }}
+              />
+              <pre>{output}</pre>
+            </>
+          )}
+      </div>
     </>
+  );
+}
+
+interface ButtonProps {
+  value: string;
+  onClick: () => void;
+}
+
+function Button({ value, onClick }: ButtonProps) {
+  return (
+    <button
+      type="button"
+      style={{
+        padding: "10px",
+        marginBottom: "10px",
+        cursor: "pointer",
+      }}
+      onClick={onClick}
+    >
+      {value}
+    </button>
   );
 }
 
