@@ -1,0 +1,12 @@
+.TableView {
+  border-collapse: collapse;
+  &:focus {
+    outline: none;
+  }
+
+  td, th {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: left;
+  }
+}
