@@ -6,8 +6,9 @@ interface TableViewProps {
 }
 
 export function TableView({ data }: TableViewProps) {
-  const keys = data[0];
-  const valueRows = data.slice(1);
+  const [rows, setRows] = useState(data);
+  const keys = rows[0];
+  const valueRows = rows.slice(1);
 
   const [cellRowSpan, setCellRowSpan] = useState(
     data.map((row) => row.map(() => 1)),
@@ -40,6 +41,32 @@ export function TableView({ data }: TableViewProps) {
     return row === selectedCell[0] && col === selectedCell[1];
   }
 
+  function deleteCell(selectedRow: number, selectedCol: number) {
+    const newRow = [...rows[selectedRow]];
+    newRow.splice(selectedCol, 1);
+    const newRows = [
+      ...rows.slice(0, selectedRow),
+      newRow,
+      ...rows.slice(selectedRow + 1),
+    ];
+    setRows(newRows);
+  }
+
+  function insertCell(selectedRow: number, selectedCol: number, value: string) {
+    const row = [...rows[selectedRow]];
+    const newRow = [
+      ...row.slice(0, selectedCol),
+      value,
+      ...row.slice(selectedCol),
+    ];
+    const newRows = [
+      ...rows.slice(0, selectedRow),
+      newRow,
+      ...rows.slice(selectedRow + 1),
+    ];
+    setRows(newRows);
+  }
+
   return (
     <table
       style={{ borderCollapse: "collapse" }}
@@ -52,7 +79,6 @@ export function TableView({ data }: TableViewProps) {
         }
         e.preventDefault();
 
-        console.log(e);
         if (e.shiftKey) {
           switch (e.key) {
             case "ArrowLeft":
@@ -67,8 +93,37 @@ export function TableView({ data }: TableViewProps) {
             case "ArrowDown":
               incrementRowSpan(...selectedCell, 1);
           }
+        } else if (e.ctrlKey) {
+          const [selectedRow, selectedCol] = selectedCell;
+          const cellValue = rows[selectedRow][selectedCol];
+
+          switch (e.key) {
+            case "ArrowLeft": {
+              // delete selected
+              deleteCell(selectedRow, selectedCol);
+              break;
+            }
+            case "ArrowRight": {
+              // duplicate cell and shift right
+              insertCell(selectedRow, selectedCol, cellValue);
+              break;
+            }
+            case "ArrowUp":
+              // delete below selected
+              deleteCell(selectedRow + 1, selectedCol);
+              break;
+            case "ArrowDown":
+              // duplicate cell and shift down
+              insertCell(
+                selectedRow + 1,
+                selectedCol,
+                cellValue,
+              );
+          }
         } else {
           const [selectedRow, selectedCol] = selectedCell;
+          const rowSpan = cellRowSpan[selectedRow][selectedCol];
+
           switch (e.key) {
             case "ArrowLeft":
               selectCell(selectedRow, selectedCol - 1);
@@ -80,7 +135,7 @@ export function TableView({ data }: TableViewProps) {
               selectCell(selectedRow - 1, selectedCol);
               break;
             case "ArrowDown":
-              selectCell(selectedRow + 1, selectedCol);
+              selectCell(selectedRow + rowSpan, selectedCol);
           }
         }
       }}
