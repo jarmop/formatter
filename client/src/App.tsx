@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { matrixToArrayOfObjects, tsvToArray } from "./helpers.ts";
+import { matrixToArrayOfObjects, tryParseJSON, tsvToArray } from "./helpers.ts";
 import { js_beautify } from "js-beautify";
 import { complexTableTSV } from "./testData/index.ts";
 import { TableView } from "./TableView.tsx";
@@ -58,8 +58,22 @@ function App() {
     return object;
   }
 
+  function isArrayOfObjects(value: unknown) {
+    return Array.isArray(value) && typeof value[0] === "object";
+  }
+
+  function arrayOfObjectsToMatrix(arr: object[]): string[][] {
+    const keys = Object.keys(arr[0]);
+    const values = arr.map((o) => Object.values(o));
+    return [keys, ...values];
+  }
+
   function parse(value: string) {
-    if (value.includes("\t")) {
+    const parsedJson = tryParseJSON(value);
+    if (parsedJson && isArrayOfObjects(parsedJson)) {
+      setParsedData(arrayOfObjectsToMatrix(parsedJson));
+      setViewMode("table");
+    } else if (value.includes("\t")) {
       setParsedData(tsvToArray(value));
     } else {
       setParsedData(listToObject(value));

@@ -60,3 +60,17 @@ export function matrixToArrayOfObjects(rows: string[][]) {
 
   return data;
 }
+
+export function tryParseJSON(str: string) {
+  // First, ensure the input is actually a string and not empty.
+  if (typeof str !== "string" || str.trim().length === 0) {
+    return false;
+  }
+
+  try {
+    return JSON.parse(str);
+  } catch (_) {
+    // console.info("not valid JSON");s
+    return false;
+  }
+}
