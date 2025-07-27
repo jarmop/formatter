@@ -43,8 +43,7 @@ export function TableView({ rows, onChange }: TableViewProps) {
   }
 
   function deleteCell(selectedRow: number, selectedCol: number) {
-    const newRow = [...rows[selectedRow]];
-    newRow.splice(selectedCol, 1);
+    const newRow = rows[selectedRow].toSpliced(selectedCol, 1);
     const newRows = [
       ...rows.slice(0, selectedRow),
       newRow,
@@ -68,13 +67,24 @@ export function TableView({ rows, onChange }: TableViewProps) {
     onChange(newRows);
   }
 
+  function deleteColumn(col: number) {
+    const newRows = rows.map((r) => r.toSpliced(col, 1));
+    onChange(newRows);
+  }
+
   return (
     <table
       style={{ borderCollapse: "collapse" }}
       className="TableView"
       tabIndex={0}
       onKeyDown={(e) => {
-        const handledKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+        const handledKeys = [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "Delete",
+        ];
         if (!selectedCell || !handledKeys.includes(e.key)) {
           return;
         }
@@ -120,6 +130,10 @@ export function TableView({ rows, onChange }: TableViewProps) {
                 selectedCol,
                 cellValue,
               );
+          }
+        } else if (e.key === "Delete") {
+          if (selectedCell[0] === 0) {
+            deleteColumn(selectedCell[1]);
           }
         } else {
           const [selectedRow, selectedCol] = selectedCell;
