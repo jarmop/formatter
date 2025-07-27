@@ -3,6 +3,7 @@ import "./App.css";
 import { matrixToArrayOfObjects, tryParseJSON, tsvToArray } from "./helpers.ts";
 import { js_beautify } from "js-beautify";
 import { TableView } from "./TableView.tsx";
+import { tryParseHTML } from "./tryParseHTML.ts";
 
 function App() {
   const [input, setInput] = useState("");
@@ -66,6 +67,12 @@ function App() {
   }
 
   function parse(value: string) {
+    const parsedHTML = tryParseHTML(value);
+    if (parsedHTML) {
+      setParsedData(parsedHTML);
+      setViewMode("table");
+      return;
+    }
     const parsedJson = tryParseJSON(value);
     if (parsedJson && isArrayOfObjects(parsedJson)) {
       setParsedData(arrayOfObjectsToMatrix(parsedJson));
