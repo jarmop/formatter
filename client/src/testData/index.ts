@@ -1,6 +1,4 @@
-import { complexTableTSV } from "./complexTableTSV.ts";
-
-const test = `
+export const test = `
 Euronorm (EN) number[6]	EN designation	AISI grade[7]	C	Cr	Mo	Ni	Others	Melts at[8]	Remark
 1.4310	X10CrNi18-8	301	0.10	17.5	NS	8	NS	1420	For springs
 1.4301	X5CrNi18-10	304	< 0.07	18.5	NS	9	NS	1450	A very common austenitic stainless steel grade
@@ -12,7 +10,5 @@ Euronorm (EN) number[6]	EN designation	AISI grade[7]	C	Cr	Mo	Ni	Others	Melts at[
 1.4571	X6CrNiMoTi17-12-2	316Ti	< 0.08	17.5	2.25	12	Ti: 5×C ≤ 0.70		
 `;
 
-const test2 =
+export const test2 =
   "Methyl dehydroabietate: 22.44%\nDehydroabietic acid: 14.59%\nRetene (7-isopropyl-1-methylphenanthrene): 10.08%\nIsopimaral: 6.18%\nPimaral: 4.71%\nAbietic acid: 4.23%\nPimaric acid: 3.59%\n18-Norabieta-8,11,13-triene: 3.50%\n2,3,5-Trimethylphenanthrene: 1.72%\nLevoglucosan: 1.44%";
-
-export { complexTableTSV, test, test2 };

@@ -2,13 +2,10 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { matrixToArrayOfObjects, tryParseJSON, tsvToArray } from "./helpers.ts";
 import { js_beautify } from "js-beautify";
-import { complexTableTSV } from "./testData/index.ts";
 import { TableView } from "./TableView.tsx";
 
 function App() {
-  const [input, setInput] = useState(
-    complexTableTSV,
-  );
+  const [input, setInput] = useState("");
   const [parsedData, setParsedData] = useState<
     string[][] | Record<string, string>
   >();

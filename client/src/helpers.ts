@@ -1,9 +1,21 @@
+function countCells(row: string) {
+  return row.match(/\t/g)?.length || 0;
+}
+
 export function tsvToArray(text: string) {
-  const rows = text.trim().split("\n").map((row) => row.split("\t"));
+  const stringRows = text.trim().split("\n");
+  const keyCount = Math.max(...stringRows.map(countCells));
+
+  const firstValueRowIndex = countCells(stringRows[0]) === keyCount
+    ? 1
+    : stringRows.findIndex((r) => countCells(r) === keyCount);
+  const keyRow = stringRows.slice(0, firstValueRowIndex).join("\n").split("\t");
+
+  const rows = stringRows.slice(firstValueRowIndex).map((r) => r.split("\t"));
 
   const valueRows: string[][] = [];
   let validRowIndex = 0;
-  rows.slice(1).forEach((rawRow) => {
+  rows.forEach((rawRow) => {
     const row = rawRow.filter((cell) => !cell.includes("mathbb"));
     if (row.length > 1) {
       valueRows.push(row);
@@ -14,7 +26,7 @@ export function tsvToArray(text: string) {
     }
   });
 
-  return [rows[0], ...valueRows];
+  return [keyRow, ...valueRows];
 }
 
 export function matrixToArrayOfObjects(rows: string[][]) {
