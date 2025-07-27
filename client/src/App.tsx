@@ -50,7 +50,7 @@ function App() {
     const object: Record<string, string> = {};
     rows.forEach((row) => {
       const [key, value] = row.split(":");
-      object[key] = value.trim();
+      object[key] = value?.trim();
     });
 
     return object;
@@ -67,6 +67,9 @@ function App() {
   }
 
   function parse(value: string) {
+    if (value.trim().length === 0) {
+      return;
+    }
     const parsedHTML = tryParseHTML(value);
     if (parsedHTML) {
       setParsedData(parsedHTML);
